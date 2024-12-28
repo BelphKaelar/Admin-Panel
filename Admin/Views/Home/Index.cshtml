@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Chỉ sử dụng biến khi cần thiết và không trùng lặp khai báo
+    var ordersByTime = ViewData["OrdersByTime"] as Dictionary<string, int>;
+    var statuses = ViewData["OrderStatuses"] as Dictionary<string, int>;
+    var featuredProducts = ViewData["FeaturedProducts"] as List<Dictionary<string, object>>;
+    var customerCount = ViewData["CustomerCount"] ?? "0";
+    var totalRevenue = ViewData["TotalRevenue"] ?? "0.00";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h5>Total Customers</h5>
+                    <h3>@customerCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <h5>Total Orders</h5>
+                    <h3>
+                        @if (ordersByTime != null && ordersByTime.ContainsKey("This Year"))
+                        {
+                            @ordersByTime["This Year"]
+                        }
+                        else
+                        {
+                            @:0
+                        }
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h5>Total Revenue</h5>
+                    <h3>$@totalRevenue</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-star"></i> Featured Products
+        </div>
+        <div class="card-body">
+            @if (featuredProducts != null && featuredProducts.Any())
+            {
+                <ul class="list-group">
+                    @foreach (var product in featuredProducts)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @product["p_name"]
+                            <span class="badge bg-primary">$@product["p_price"]</span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No featured products available.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Order Status Breakdown -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-pie"></i> Order Status Breakdown
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @if (statuses != null && statuses.Any())
+                        {
+                            @foreach (var status in statuses)
+                            {
+                                <li class="list-group-item">@status.Key: @status.Value</li>
+                            }
+                        }
+                        else
+                        {
+                            <p>No order status data available.</p>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders By Time -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt"></i> Orders By Time
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        @if (ordersByTime != null && ordersByTime.Any())
+                        {
+                            @foreach (var timeFrame in ordersByTime)
+                            {
+                                <li class="list-group-item">@timeFrame.Key: @timeFrame.Value</li>
+                            }
+                        }
+                        else
+                        {
+                            <p>No orders by time data available.</p>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

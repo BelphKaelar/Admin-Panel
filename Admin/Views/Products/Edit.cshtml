@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Edit Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var product = (Dictionary<string, object>)Model;
+
+    // Danh sách các danh mục
+    var categories = new List<string>
+    {
+        "Laptop", "Gaming Laptop", "Headphones", "Monitor",
+        "Speakers", "Mobile Phone", "Console",
+        "Mouse & Keyboard", "Accessories"
+    };
+
+    // Lấy danh mục hiện tại
+    var currentCategory = product.ContainsKey("p_category") ? product["p_category"]?.ToString() : string.Empty;
+}
+
+<h2>Edit Product</h2>
+
+@if (product == null)
+{
+    <div class="alert alert-danger">Product data is missing or invalid.</div>
+}
+else
+{
+    <form method="post" enctype="multipart/form-data" asp-controller="Products" asp-action="Edit" asp-route-id="@product["id"]">
+        <div class="form-group">
+            <label for="p_name">Product Name</label>
+            <input type="text" class="form-control" id="p_name" name="p_name" value="@product["p_name"]?.ToString()" required />
+        </div>
+
+        <!-- Product Images Section -->
+        <div class="form-group">
+            <label for="p_imgs">Product Images</label>
+            <input type="file" class="form-control mb-3" id="p_imgs" name="p_imgs" accept="image/*" multiple />
+
+            <!-- Image Preview -->
+            <div class="row">
+                @if (product.ContainsKey("p_imgs") && product["p_imgs"] is IEnumerable<object> imageObjects)
+                {
+                    var images = imageObjects
+                    .Where(img => img is string) // Lọc chỉ những phần tử là chuỗi
+                    .Cast<string>();
+
+                    foreach (var imageUrl in images)
+                    {
+                        <div class="col-md-3 col-sm-4 mb-3">
+                            <div class="card">
+                                <img src="@imageUrl" class="card-img-top img-fluid" style="width: 100%; height: 150px; object-fit: cover;" />
+                                <div class="card-body text-center">
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage(this)">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Other Fields -->
+        <div class="form-group">
+            <label for="p_price">Price</label>
+            <input type="number" class="form-control" id="p_price" name="p_price" step="0.01" value="@product["p_price"]?.ToString()" required />
+        </div>
+
+        <div class="form-group">
+            <label for="p_quantity">Quantity</label>
+            <input type="number" class="form-control" id="p_quantity" name="p_quantity" value="@product["p_quantity"]?.ToString()" required />
+        </div>
+
+        <div class="form-group">
+            <label for="p_desc">Description</label>
+            <textarea class="form-control" id="p_desc" name="p_desc" rows="4" required>@product["p_desc"]?.ToString()</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="p_seller">Seller</label>
+            <input type="text" class="form-control" id="p_seller" name="p_seller" value="@product["p_seller"]?.ToString()" required />
+        </div>
+
+        <div class="form-group">
+            <label for="p_colors">Colors (Optional, comma-separated RGB values)</label>
+            <input type="text" class="form-control" id="p_colors" name="p_colors"
+                   value="@string.Join(",", (product["p_colors"] as IEnumerable<object>)?.Select(c => c.ToString()) ?? Enumerable.Empty<string>())" />
+        </div>
+
+        <div class="form-group">
+            <label for="p_category">Category</label>
+            <select class="form-control" id="p_category" name="p_category" required>
+                <option value="" disabled>Select Category</option>
+                @foreach (var category in categories)
+                {
+                    var isSelected = category == currentCategory ? "selected" : "";
+                    <!option value="@category" @isSelected>@category</!option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="p_subcategory">Subcategory</label>
+            <input type="text" class="form-control" id="p_subcategory" name="p_subcategory" value="@product["p_subcategory"]?.ToString()" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+    </form>
+}
+<script>
+    function removeImage(button) {
+        const card = button.closest('.card');
+        if (card) {
+            card.remove();
+        }
+    }
+</script>

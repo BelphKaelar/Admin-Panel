@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="js\**" />
+    <Content Remove="js\**" />
+    <EmbeddedResource Remove="js\**" />
+    <None Remove="js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\assets\demo\chart-area-demo.js" />
+    <Content Remove="wwwroot\assets\demo\chart-bar-demo.js" />
+    <Content Remove="wwwroot\assets\demo\chart-pie-demo.js" />
+    <Content Remove="wwwroot\assets\demo\datatables-demo.js" />
+    <Content Remove="wwwroot\assets\img\error-404-monochrome.svg" />
+    <Content Remove="wwwroot\css\styles.css" />
+    <Content Remove="wwwroot\js\datatables-simple-demo.js" />
+    <Content Remove="wwwroot\js\scripts.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\assets\demo\chart-area-demo.js" />
+    <None Include="wwwroot\assets\demo\chart-bar-demo.js" />
+    <None Include="wwwroot\assets\demo\chart-pie-demo.js" />
+    <None Include="wwwroot\assets\demo\datatables-demo.js" />
+    <None Include="wwwroot\assets\img\error-404-monochrome.svg" />
+    <None Include="wwwroot\css\styles.css" />
+    <None Include="wwwroot\js\datatables-simple-demo.js" />
+    <None Include="wwwroot\js\scripts.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.9.0" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
+  </ItemGroup>
+
+</Project>

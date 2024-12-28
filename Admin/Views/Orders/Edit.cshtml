@@ -1,0 +1,87 @@
+﻿@model Dictionary<string, object>
+
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Danh sách trạng thái order
+    var orderStatuses = new[] { "placed", "confirmed", "on_delivery", "delivered" };
+
+    // Lấy giá trị hiện tại của order status
+    var currentStatus = Model.ContainsKey("order_status") ? Model["order_status"]?.ToString() ?? "" : "";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Order Details</h1>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form method="post" asp-action="Edit" asp-controller="Orders" asp-route-id="@Model["id"]">
+        <div class="mb-3">
+            <label for="orderByName" class="form-label">Customer Name</label>
+            <input type="text" class="form-control" id="orderByName" value="@Model["order_by_name"]" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="orderByEmail" class="form-label">Customer Email</label>
+            <input type="email" class="form-control" id="orderByEmail" value="@Model["order_by_email"]" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="totalAmount" class="form-label">Total Amount</label>
+            <input type="text" class="form-control" id="totalAmount" value="@Model["total_amount"]" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="shippingMethod" class="form-label">Shipping Method</label>
+            <input type="text" class="form-control" id="shippingMethod" value="@Model["shipping_method"]" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Payment Method</label>
+            <input type="text" class="form-control" id="paymentMethod" value="@Model["payment_method"]" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label for="orderStatus" class="form-label">Order Status</label>
+            <select class="form-select" id="orderStatus" name="order_status" required>
+                <option value="" disabled>Select Status</option>
+                @foreach (var status in orderStatuses)
+                {
+                    var isSelected = status == currentStatus ? "selected" : "";
+                    <!option value="@status" @isSelected>@status.Replace("_", " ").ToUpper()</!option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Order Items</label>
+            <ul class="list-group">
+                @if (Model.ContainsKey("orders") && Model["orders"] is IEnumerable<object> orderItems)
+                {
+                    foreach (var item in orderItems.Cast<Dictionary<string, object>>())
+                    {
+                        <li class="list-group-item">
+                            <strong>Product:</strong> @item["title"] <br />
+                            <strong>Quantity:</strong> @item["qty"] <br />
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item">No items found in this order.</li>
+                }
+            </ul>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="@Url.Action("Index", "Orders")" class="btn btn-secondary">Back</a>
+    </form>
+</div>
