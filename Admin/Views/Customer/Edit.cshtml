@@ -1,0 +1,71 @@
+﻿@model Dictionary<string, object>
+
+@{
+    ViewData["Title"] = "Edit Customer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Edit Customer</h2>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- Edit Form -->
+    <form method="post" asp-action="Edit" class="p-4 border rounded bg-light">
+        <input type="hidden" name="id" value="@Model["id"]" />
+
+        <!-- Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="@Model.GetValueOrDefault("name", "")" required />
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="@Model.GetValueOrDefault("email", "")" required />
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="@Model.GetValueOrDefault("phone", "")" />
+        </div>
+
+        <!-- Address -->
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" id="address" name="address">@Model.GetValueOrDefault("address", "")</textarea>
+        </div>
+
+        <!-- Province -->
+        <div class="mb-3">
+            <label for="province" class="form-label">Province</label>
+            <input type="text" class="form-control" id="province" name="province" value="@Model.GetValueOrDefault("province", "")" />
+        </div>
+
+        <!-- City -->
+        <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" value="@Model.GetValueOrDefault("city", "")" />
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </form>
+</div>

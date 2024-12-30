@@ -4,7 +4,7 @@
 
     var product = (Dictionary<string, object>)Model;
 
-    // Danh sách các danh mục
+    // Danh sách các danh mục sản phẩm
     var categories = new List<string>
     {
         "Laptop", "Gaming Laptop", "Headphones", "Monitor",
@@ -16,7 +16,7 @@
     var currentCategory = product.ContainsKey("p_category") ? product["p_category"]?.ToString() : string.Empty;
 }
 
-<h2>Edit Product</h2>
+<h2 class="my-4">Edit Product</h2>
 
 @if (product == null)
 {
@@ -25,81 +25,114 @@
 else
 {
     <form method="post" enctype="multipart/form-data" asp-controller="Products" asp-action="Edit" asp-route-id="@product["id"]">
-        <div class="form-group">
-            <label for="p_name">Product Name</label>
-            <input type="text" class="form-control" id="p_name" name="p_name" value="@product["p_name"]?.ToString()" required />
-        </div>
+        <div class="row">
+            <!-- Product Name -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="p_name">Product Name</label>
+                    <input type="text" class="form-control" id="p_name" name="p_name" value="@product["p_name"]?.ToString()" required />
+                </div>
+            </div>
 
-        <!-- Product Images Section -->
-        <div class="form-group">
-            <label for="p_imgs">Product Images</label>
-            <input type="file" class="form-control mb-3" id="p_imgs" name="p_imgs" accept="image/*" multiple />
+            <!-- Product Price -->
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="p_price">Price</label>
+                    <input type="number" class="form-control" id="p_price" name="p_price" step="0.01" value="@product["p_price"]?.ToString()" required />
+                </div>
+            </div>
 
-            <!-- Image Preview -->
-            <div class="row">
-                @if (product.ContainsKey("p_imgs") && product["p_imgs"] is IEnumerable<object> imageObjects)
-                {
-                    var images = imageObjects
-                    .Where(img => img is string) // Lọc chỉ những phần tử là chuỗi
-                    .Cast<string>();
-
-                    foreach (var imageUrl in images)
-                    {
-                        <div class="col-md-3 col-sm-4 mb-3">
-                            <div class="card">
-                                <img src="@imageUrl" class="card-img-top img-fluid" style="width: 100%; height: 150px; object-fit: cover;" />
-                                <div class="card-body text-center">
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage(this)">Remove</button>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
+            <!-- Product Quantity -->
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="p_quantity">Quantity</label>
+                    <input type="number" class="form-control" id="p_quantity" name="p_quantity" value="@product["p_quantity"]?.ToString()" required />
+                </div>
             </div>
         </div>
 
-        <!-- Other Fields -->
-        <div class="form-group">
-            <label for="p_price">Price</label>
-            <input type="number" class="form-control" id="p_price" name="p_price" step="0.01" value="@product["p_price"]?.ToString()" required />
+        <div class="row">
+            <!-- Product Description -->
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="p_desc">Description</label>
+                    <textarea class="form-control" id="p_desc" name="p_desc" rows="4" required>@product["p_desc"]?.ToString()</textarea>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="p_quantity">Quantity</label>
-            <input type="number" class="form-control" id="p_quantity" name="p_quantity" value="@product["p_quantity"]?.ToString()" required />
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="p_imgs">Product Images</label>
+                    <input type="file" class="form-control" id="p_imgs" name="p_imgs" accept="image/*" multiple />
+                    <small class="form-text text-muted">You can upload additional images for this product.</small>
+                </div>
+
+                <!-- Image Preview -->
+                <div class="row">
+                    @if (product.ContainsKey("p_imgs") && product["p_imgs"] is IEnumerable<object> imageObjects)
+                    {
+                        var images = imageObjects.Cast<string>();
+                        foreach (var imageUrl in images)
+                        {
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card">
+                                    <img src="@imageUrl" class="card-img-top img-fluid" style="width: 100%; height: 150px; object-fit: cover;" />
+                                    <div class="card-body text-center">
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeImage(this)">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Product Seller -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="p_seller">Seller</label>
+                    <input type="text" class="form-control" id="p_seller" name="p_seller" value="@product["p_seller"]?.ToString()" required />
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="p_desc">Description</label>
-            <textarea class="form-control" id="p_desc" name="p_desc" rows="4" required>@product["p_desc"]?.ToString()</textarea>
+        <div class="row">
+            <!-- Product Colors -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="p_colors">Colors (comma-separated [Android (android.graphics.Color)] values)</label>
+                    <input type="text" class="form-control" id="p_colors" name="p_colors" value="@string.Join(",", (product["p_colors"] as IEnumerable<object>)?.Select(c => c.ToString()) ?? Enumerable.Empty<string>())" />
+                    <small class="form-text text-muted">Enter color values in Android (android.graphics.Color) format only, separated by commas.</small>
+                </div>
+            </div>
+
+            <!-- Product Category -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="p_category">Category</label>
+                    <select class="form-control" id="p_category" name="p_category" required>
+                        <option value="" disabled>Select Category</option>
+                        @foreach (var category in categories)
+                        {
+                            var isSelected = category == currentCategory ? "selected" : "";
+                            <!option value="@category" @isSelected>@category</!option>
+                        }
+                    </select>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="p_seller">Seller</label>
-            <input type="text" class="form-control" id="p_seller" name="p_seller" value="@product["p_seller"]?.ToString()" required />
-        </div>
-
-        <div class="form-group">
-            <label for="p_colors">Colors (Optional, comma-separated RGB values)</label>
-            <input type="text" class="form-control" id="p_colors" name="p_colors"
-                   value="@string.Join(",", (product["p_colors"] as IEnumerable<object>)?.Select(c => c.ToString()) ?? Enumerable.Empty<string>())" />
-        </div>
-
-        <div class="form-group">
-            <label for="p_category">Category</label>
-            <select class="form-control" id="p_category" name="p_category" required>
-                <option value="" disabled>Select Category</option>
-                @foreach (var category in categories)
-                {
-                    var isSelected = category == currentCategory ? "selected" : "";
-                    <!option value="@category" @isSelected>@category</!option>
-                }
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="p_subcategory">Subcategory</label>
-            <input type="text" class="form-control" id="p_subcategory" name="p_subcategory" value="@product["p_subcategory"]?.ToString()" required />
+        <div class="row">
+            <!-- Product Subcategory -->
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="p_subcategory">Subcategory</label>
+                    <input type="text" class="form-control" id="p_subcategory" name="p_subcategory" value="@product["p_subcategory"]?.ToString()" required />
+                </div>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary mt-3">Save Changes</button>

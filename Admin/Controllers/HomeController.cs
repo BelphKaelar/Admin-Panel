@@ -31,16 +31,19 @@ namespace Admin.Controllers
                  (p["is_featured"]?.ToString().ToLower() == "true"))
             ).ToList();
 
-            var totalRevenue = orders.Sum(o => Convert.ToDecimal(o["total_amount"] ?? 0));
+            var totalRevenue = orders.Sum(o =>
+                o.ContainsKey("total_amount") && decimal.TryParse(o["total_amount"]?.ToString(), out var amount)
+                ? amount
+                : 0);
+
             var orderStatuses = new Dictionary<string, int>
             {
-                { "placed", orders.Count(o => o["order_status"]?.ToString() == "placed") },
-                { "confirmed", orders.Count(o => o["order_status"]?.ToString() == "confirmed") },
-                { "on_delivery", orders.Count(o => o["order_status"]?.ToString() == "on_delivery") },
-                { "delivered", orders.Count(o => o["order_status"]?.ToString() == "delivered") }
+                { "placed", orders.Count(o => o.ContainsKey("order_status") && o["order_status"]?.ToString() == "placed") },
+                { "confirmed", orders.Count(o => o.ContainsKey("order_status") && o["order_status"]?.ToString() == "confirmed") },
+                { "on_delivery", orders.Count(o => o.ContainsKey("order_status") && o["order_status"]?.ToString() == "on_delivery") },
+                { "delivered", orders.Count(o => o.ContainsKey("order_status") && o["order_status"]?.ToString() == "delivered") }
             };
 
-            // Chuyển đổi `order_date` từ Firestore Timestamp sang DateTime
             var now = DateTime.UtcNow;
             var ordersByTime = new Dictionary<string, int>
             {
@@ -59,7 +62,6 @@ namespace Admin.Controllers
                                                  timestamp.ToDateTime().Year == now.Year) }
             };
 
-            // Đếm số lượng khách hàng
             var customerCount = customers.Count;
 
             // Truyền dữ liệu vào ViewData

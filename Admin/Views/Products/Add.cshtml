@@ -1,107 +1,108 @@
 ﻿@{
     ViewData["Title"] = "Add Product";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Danh sách các danh mục sản phẩm
+    var categories = new List<string>
+    {
+        "Laptop", "Gaming Laptop", "Headphones", "Monitor",
+        "Speakers", "Mobile Phone", "Console",
+        "Mouse & Keyboard", "Accessories"
+    };
 }
 
-<h2>Add Product</h2>
+<h2 class="my-4">Add Product</h2>
 
 <form method="post" enctype="multipart/form-data" asp-controller="Products" asp-action="Add">
-    <div class="form-group">
-        <label for="p_name">Product Name</label>
-        <input type="text" class="form-control" id="p_name" name="p_name" required/>
+    <div class="row">
+        <!-- Product Name -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="p_name">Product Name</label>
+                <input type="text" class="form-control" id="p_name" name="p_name" placeholder="Enter product name" required>
+            </div>
+        </div>
+
+        <!-- Product Price -->
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="p_price">Price</label>
+                <input type="number" class="form-control" id="p_price" name="p_price" placeholder="Enter price" step="0.01" required>
+            </div>
+        </div>
+
+        <!-- Product Quantity -->
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="p_quantity">Quantity</label>
+                <input type="number" class="form-control" id="p_quantity" name="p_quantity" placeholder="Enter quantity" required>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="p_imgs">Product Images</label>
-        <input type="file" class="form-control" id="p_imgs" name="p_imgs" accept="image/*" multiple />
-        <div id="imagePreview"></div>
+    <div class="row">
+        <!-- Product Description -->
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="p_desc">Description</label>
+                <textarea class="form-control" id="p_desc" name="p_desc" rows="4" placeholder="Enter product description" required></textarea>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="p_price">Price</label>
-        <input type="text" class="form-control" id="p_price" name="p_price" step="0.01" required />
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="p_imgs">Product Images</label>
+                <input type="file" class="form-control" id="p_imgs" name="p_imgs" accept="image/*" multiple required>
+                <small class="form-text text-muted">You can upload multiple images for this product.</small>
+            </div>
+        </div>
+
+        <!-- Product Seller -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="p_seller">Seller</label>
+                <input type="text" class="form-control" id="p_seller" name="p_seller" placeholder="Enter seller name" required>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="p_quantity">Quantity</label>
-        <input type="number" class="form-control" id="p_quantity" name="p_quantity" required />
+    <div class="row">
+        <!-- Product Colors -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="p_colors">Colors (comma-separated [Android (android.graphics.Color)] values)</label>
+                <input type="text" class="form-control" id="p_colors" name="p_colors" placeholder="E.g., 4290426025, 4279571991">
+                <small class="form-text text-muted">Enter color values in Android (android.graphics.Color) format only, separated by commas.</small>
+            </div>
+        </div>
+
+        <!-- Product Category -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="p_category">Category</label>
+                <select class="form-control" id="p_category" name="p_category" required>
+                    <option value="" disabled selected>Select a category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="p_desc">Description</label>
-        <textarea class="form-control" id="p_desc" name="p_desc" rows="4"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label for="p_seller">Seller</label>
-        <input type="text" class="form-control" id="p_seller" name="p_seller" required />
-    </div>
-
-    <div class="form-group">
-        <label for="p_colors">Colors (Optional, comma-separated RGB values)</label>
-        <input type="text" class="form-control" id="p_colors" name="p_colors" />
-    </div>
-
-    <div class="form-group">
-        <label for="p_category">Category</label>
-        <select class="form-control" id="p_category" name="p_category" required>
-            <option value="" disabled selected>Select Category</option>
-            <option value="Laptop">Laptop</option>
-            <option value="Gaming Laptop">Gaming Laptop</option>
-            <option value="Headphones">Headphones</option>
-            <option value="Monitor">Monitor</option>
-            <option value="Speakers">Speakers</option>
-            <option value="Mobile Phone">Mobile Phone</option>
-            <option value="Console">Console</option>
-            <option value="Mouse & Keyboard">Mouse & Keyboard</option>
-            <option value="Accessories">Accessories</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="p_subcategory">Subcategory</label>
-        <input type="text" class="form-control" id="p_subcategory" name="p_subcategory" required/>
+    <div class="row">
+        <!-- Product Subcategory -->
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="p_subcategory">Subcategory</label>
+                <input type="text" class="form-control" id="p_subcategory" name="p_subcategory" placeholder="Enter subcategory" required>
+            </div>
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Add Product</button>
 </form>
-
-<script>
-    const imageInput = document.getElementById("p_imgs");
-    const imagePreview = document.getElementById("imagePreview");
-    let selectedImages = []; // Array to hold the file names
-
-    imageInput.addEventListener("change", function () {
-        imagePreview.innerHTML = ""; // Reset preview
-        Array.from(this.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                // Add image name to the selected images array
-                selectedImages.push(file);
-
-                // Display the file name and an option to remove
-                const fileNameDiv = document.createElement("div");
-                fileNameDiv.classList.add("img-thumbnail", "m-2");
-                fileNameDiv.innerHTML = `${file.name}
-                    <button class="btn btn-danger btn-sm" onclick="removeImage('${file.name}')">X</button>`;
-
-                imagePreview.appendChild(fileNameDiv);
-            };
-            reader.readAsDataURL(file);
-        });
-    });
-
-    function removeImage(fileName) {
-        // Remove image from the array
-        const index = selectedImages.findIndex(img => img.name === fileName);
-        if (index > -1) {
-            selectedImages.splice(index, 1); // Remove the image from the array
-        }
-
-        // Remove file name element from the preview
-        const previewDiv = document.querySelector(`div:contains('${fileName}')`);
-        if (previewDiv) {
-            previewDiv.remove();
-        }
-    }
-</script>
