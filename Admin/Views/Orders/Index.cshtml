@@ -45,7 +45,18 @@
                     <tr>
                         <td>@order.GetValueOrDefault("order_code", "N/A")</td>
                         <td>@order.GetValueOrDefault("order_by_email", "N/A")</td>
-                        <td>@order.GetValueOrDefault("order_status", "N/A")</td>
+                        <td>
+                            <form method="post" asp-action="UpdateStatus" asp-route-orderId="@order["id"]">
+                                <div class="input-group">
+                                    <select name="newStatus" class="form-select" onchange="this.form.submit()">
+                                        <!option value="placed" @(order.GetValueOrDefault("order_status", "").ToString() == "placed" ? "selected" : "")>Placed</!option>
+                                        <!option value="confirmed" @(order.GetValueOrDefault("order_status", "").ToString() == "confirmed" ? "selected" : "")>Confirmed</!option>
+                                        <!option value="on_delivery" @(order.GetValueOrDefault("order_status", "").ToString() == "on_delivery" ? "selected" : "")>On Delivery</!option>
+                                        <!option value="delivered" @(order.GetValueOrDefault("order_status", "").ToString() == "delivered" ? "selected" : "")>Delivered</!option>
+                                    </select>
+                                </div>
+                            </form>
+                        </td>
                         <td>@order.GetValueOrDefault("total_amount", "0").ToString()</td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@order["id"]" class="btn btn-warning btn-sm">
